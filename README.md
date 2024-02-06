@@ -16,3 +16,4 @@ swag init
 - https://github.com/gs1068/golang-ddd-sample
 - https://github.com/xesina/golang-echo-realworld-example-app
 - https://zenn.dev/nrikiji/articles/32748c274238ad
+- https://ken-aio.github.io/post/2019/02/05/golang-echo-swagger/
