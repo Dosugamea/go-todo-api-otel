@@ -16,19 +16,10 @@ type GetTaskResponse struct {
 	Task TaskResponse `json:"task"`
 }
 
-type AddTaskRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
 type AddTaskResponse struct {
 	Task TaskResponse `json:"task"`
 }
 
-type UpdateTaskRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	IsCompleted bool   `json:"is_completed"`
-}
 type UpdateTaskResponse struct {
 	Task TaskResponse `json:"task"`
 }
