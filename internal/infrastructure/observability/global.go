@@ -19,7 +19,12 @@ func NewCustomTracer(tracer trace.Tracer) *TracerWrapper {
 }
 
 func (t *TracerWrapper) StartInterfaceSpan(c echo.Context, methodName string) (context.Context, trace.Span) {
-	ctx, span := t.tracer.Start(c.Request().Context(), methodName+" (I)", LAYER_ATTR_INTERFACE)
+	// FIXME: おそらくここでspanを終了させるのはおかしい (interfaceより上のレイヤーでctxを取得するべき...?)
+	ctx := c.Request().Context()
+	span := trace.SpanFromContext(ctx)
+	span.End()
+
+	ctx, span = t.tracer.Start(ctx, methodName+" (I)", LAYER_ATTR_INTERFACE)
 	return ctx, span
 }
 
