@@ -3,9 +3,9 @@ package model
 import "time"
 
 type Task struct {
-	ID          int
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          int       `gorm:"primaryKey"`
+	CreatedAt   time.Time `gorm:"autoCreateTime"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime"`
 	Title       string
 	Description string
 	IsCompleted bool
