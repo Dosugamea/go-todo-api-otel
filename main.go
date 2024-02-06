@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/database"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/persistence"
+	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/router"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler"
-	"github.com/Dosugamea/go-todo-api-otel/internal/interface/router"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/routing"
 	"github.com/Dosugamea/go-todo-api-otel/internal/model"
 	"github.com/Dosugamea/go-todo-api-otel/internal/usecase"
