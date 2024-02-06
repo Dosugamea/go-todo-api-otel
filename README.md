@@ -25,8 +25,16 @@ swag init
 ```
 
 ## References
-- https://github.com/nrikiji/go-echo-sample
-- https://github.com/gs1068/golang-ddd-sample
-- https://github.com/xesina/golang-echo-realworld-example-app
-- https://zenn.dev/nrikiji/articles/32748c274238ad
-- https://ken-aio.github.io/post/2019/02/05/golang-echo-swagger/
+- DDD
+  - https://github.com/gs1068/golang-ddd-sample
+- Echo
+  - https://zenn.dev/nrikiji/articles/32748c274238ad
+  - https://github.com/nrikiji/go-echo-sample
+  - https://github.com/xesina/golang-echo-realworld-example-app
+- Swagger
+  - https://ken-aio.github.io/post/2019/02/05/golang-echo-swagger/
+- OpenTelemetry
+  - https://christina04.hatenablog.com/entry/opentelemetry-in-go
+  - https://zenn.dev/avita_blog/articles/d1fb4afd200aa1
+  - https://uptrace.dev/get/opentelemetry-go.html
+  - https://blog.cybozu.io/entry/2023/04/12/170000
