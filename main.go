@@ -28,6 +28,7 @@ import (
 // @consumes application/json
 func main() {
 	// OpentelemetryのTracerを初期化
+	// APMにJaegerを使う
 	jaegerEndpoint := os.Getenv("EXPORTER_ENDPOINT")
 	envName := os.Getenv("DEPLOY_ENV_NAME")
 	if envName == "" {
