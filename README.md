@@ -15,7 +15,7 @@ PoC of OpenTelemetry for go echo api
 
 ### Run
 ```bash
-go run main.go
+docker-compose up --build api
 (Go to http://localhost:8080/swagger/index.html and try the API)
 ```
 

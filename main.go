@@ -46,5 +46,5 @@ func main() {
 	routing.RegisterTaskRoutings(v1, h)
 
 	// サーバーを起動
-	r.Logger.Fatal(r.Start("127.0.0.1:8080"))
+	r.Logger.Fatal(r.Start(":8080"))
 }
