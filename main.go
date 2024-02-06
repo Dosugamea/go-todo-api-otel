@@ -1,7 +1,10 @@
 package main
 
 import (
+	"os"
+
 	_ "github.com/Dosugamea/go-todo-api-otel/docs"
+	"github.com/Dosugamea/go-todo-api-otel/internal/bootstrap"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/database"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/persistence"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/router"
@@ -24,6 +27,14 @@ import (
 // @produce	application/json
 // @consumes application/json
 func main() {
+	// OpentelemetryのTracerを初期化
+	jaegerEndpoint := os.Getenv("EXPORTER_ENDPOINT")
+	envName := os.Getenv("DEPLOY_ENV_NAME")
+	if envName == "" {
+		envName = "development"
+	}
+	bootstrap.InitTracer(jaegerEndpoint, envName)
+
 	// Echoを初期化
 	r := router.New()
 	r.GET("/swagger/*", echoSwagger.WrapHandler)
