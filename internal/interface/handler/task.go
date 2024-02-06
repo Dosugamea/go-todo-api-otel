@@ -3,10 +3,13 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/request"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/response"
+	"github.com/Dosugamea/go-todo-api-otel/internal/model"
 	"github.com/Dosugamea/go-todo-api-otel/internal/usecase"
+	shared_err "github.com/Dosugamea/go-todo-api-otel/pkg/shared/err"
 	"github.com/labstack/echo/v4"
 )
 
@@ -47,7 +50,17 @@ func (h taskHandler) Create(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, response.NewErrorResponse(err))
 	}
 
-	return c.JSON(http.StatusCreated, response.NewErrorResponse(errors.New("not implemented")))
+	task := model.NewTask(req.Title, req.Description)
+	createdTask, err := h.uc.Create(task)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
+	}
+
+	res := response.CreateTaskResponse{}
+	if err := res.Bind(createdTask); err != nil {
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(err))
+	}
+	return c.JSON(http.StatusCreated, res)
 }
 
 // GetTask godoc
@@ -63,7 +76,24 @@ func (h taskHandler) Create(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [get]
 func (h taskHandler) Get(c echo.Context) error {
-	return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
+	}
+
+	task, err := h.uc.Get(id)
+	if err != nil {
+		if v := errors.Is(err, shared_err.ErrNotFound); v {
+			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
+		}
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
+	}
+
+	res := response.GetTaskResponse{}
+	if err := res.Bind(task); err != nil {
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(err))
+	}
+	return c.JSON(http.StatusOK, res)
 }
 
 // ListTasks godoc
@@ -77,7 +107,16 @@ func (h taskHandler) Get(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [get]
 func (h taskHandler) List(c echo.Context) error {
-	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
+	tasks, err := h.uc.List()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
+	}
+
+	res := response.ListTaskResponse{}
+	if err := res.Bind(tasks); err != nil {
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(err))
+	}
+	return c.JSON(http.StatusOK, res)
 }
 
 // UpdateTask godoc
@@ -102,7 +141,25 @@ func (h taskHandler) Update(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, response.NewErrorResponse(err))
 	}
 
-	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
+	}
+
+	updatedTask, err := h.uc.Update(id, req.Title, req.Description, req.IsCompleted)
+	if err != nil {
+		if v := errors.Is(err, shared_err.ErrNotFound); v {
+			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
+		}
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
+	}
+
+	res := response.UpdateTaskResponse{}
+	if err := res.Bind(updatedTask); err != nil {
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
 
 // DeleteTask godoc
@@ -119,5 +176,17 @@ func (h taskHandler) Update(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [delete]
 func (h taskHandler) Delete(c echo.Context) error {
-	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
+	}
+
+	if err := h.uc.Delete(id); err != nil {
+		if v := errors.Is(err, shared_err.ErrNotFound); v {
+			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
+		}
+		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
 }
