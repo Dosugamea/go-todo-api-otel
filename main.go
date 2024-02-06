@@ -30,7 +30,9 @@ func main() {
 
 	// データベースを初期化
 	db := database.GetConnection()
-	db.AutoMigrate(&model.Task{})
+	if err := db.AutoMigrate(&model.Task{}); err != nil {
+		panic(err)
+	}
 
 	// 依存関係を初期化
 	taskPersistence := persistence.NewTaskRepository(db)
