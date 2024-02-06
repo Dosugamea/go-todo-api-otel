@@ -3,7 +3,13 @@
         "Dosugamea",
         "gorm",
         "labstack",
+        "opentelemetry",
         "otel",
+        "otlp",
+        "otlptrace",
+        "otlptracegrpc",
+        "otlptracehttp",
+        "sdktrace",
         "usecase"
     ]
 }
