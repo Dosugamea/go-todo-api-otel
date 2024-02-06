@@ -6,7 +6,7 @@ import (
 )
 
 func RegisterTaskRoutings(g *echo.Group, h handler.TaskHandler) {
-	g.POST("/tasks", h.Add)
+	g.POST("/tasks", h.Create)
 	g.GET("/tasks/:id", h.Get)
 	g.GET("/tasks", h.List)
 	g.PUT("/tasks/:id", h.Update)

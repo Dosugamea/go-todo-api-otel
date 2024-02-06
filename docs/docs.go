@@ -67,7 +67,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/response.AddTaskRequest"
+                            "$ref": "#/definitions/request.CreateTaskRequest"
                         }
                     }
                 ],
@@ -75,7 +75,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/response.AddTaskResponse"
+                            "$ref": "#/definitions/response.CreateTaskResponse"
                         }
                     },
                     "401": {
@@ -170,7 +170,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/response.UpdateTaskRequest"
+                            "$ref": "#/definitions/request.UpdateTaskRequest"
                         }
                     }
                 ],
@@ -262,7 +262,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "response.AddTaskRequest": {
+        "request.CreateTaskRequest": {
             "type": "object",
             "properties": {
                 "description": {
@@ -273,7 +273,21 @@ const docTemplate = `{
                 }
             }
         },
-        "response.AddTaskResponse": {
+        "request.UpdateTaskRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "is_completed": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.CreateTaskResponse": {
             "type": "object",
             "properties": {
                 "task": {
@@ -327,20 +341,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.UpdateTaskRequest": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "is_completed": {
-                    "type": "boolean"
-                },
-                "title": {
                     "type": "string"
                 }
             }

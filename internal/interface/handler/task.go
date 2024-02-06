@@ -10,7 +10,7 @@ import (
 )
 
 type TaskHandler interface {
-	Add(c echo.Context) error
+	Create(c echo.Context) error
 	Get(c echo.Context) error
 	List(c echo.Context) error
 	Update(c echo.Context) error
@@ -34,13 +34,13 @@ func NewTaskHandler(uc usecase.TaskUsecase) TaskHandler {
 // @Tags task
 // @Accept  json
 // @Produce  json
-// @Param task body response.AddTaskRequest true "Task to create"
-// @Success 201 {object} response.AddTaskResponse
+// @Param task body request.CreateTaskRequest true "Task to create"
+// @Success 201 {object} response.CreateTaskResponse
 // @Failure 401 {object} response.ErrorResponse
 // @Failure 422 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [post]
-func (h taskHandler) Add(c echo.Context) error {
+func (h taskHandler) Create(c echo.Context) error {
 	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
 }
 
@@ -82,7 +82,7 @@ func (h taskHandler) List(c echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "ID of the task to update"
-// @Param task body response.UpdateTaskRequest true "Task to update"
+// @Param task body request.UpdateTaskRequest true "Task to update"
 // @Success 200 {object} response.UpdateTaskResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 401 {object} response.ErrorResponse

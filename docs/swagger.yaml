@@ -1,13 +1,22 @@
 basePath: /api/v1
 definitions:
-  response.AddTaskRequest:
+  request.CreateTaskRequest:
     properties:
       description:
         type: string
       title:
         type: string
     type: object
-  response.AddTaskResponse:
+  request.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      is_completed:
+        type: boolean
+      title:
+        type: string
+    type: object
+  response.CreateTaskResponse:
     properties:
       task:
         $ref: '#/definitions/response.TaskResponse'
@@ -42,15 +51,6 @@ definitions:
       title:
         type: string
       updated_at:
-        type: string
-    type: object
-  response.UpdateTaskRequest:
-    properties:
-      description:
-        type: string
-      is_completed:
-        type: boolean
-      title:
         type: string
     type: object
   response.UpdateTaskResponse:
@@ -96,14 +96,14 @@ paths:
         name: task
         required: true
         schema:
-          $ref: '#/definitions/response.AddTaskRequest'
+          $ref: '#/definitions/request.CreateTaskRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/response.AddTaskResponse'
+            $ref: '#/definitions/response.CreateTaskResponse'
         "401":
           description: Unauthorized
           schema:
@@ -196,7 +196,7 @@ paths:
         name: task
         required: true
         schema:
-          $ref: '#/definitions/response.UpdateTaskRequest'
+          $ref: '#/definitions/request.UpdateTaskRequest'
       produces:
       - application/json
       responses:

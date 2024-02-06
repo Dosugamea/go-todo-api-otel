@@ -4,12 +4,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type AddTaskRequest struct {
+type CreateTaskRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
-func (r *AddTaskRequest) Bind(c echo.Context) error {
+func (r *CreateTaskRequest) Bind(c echo.Context) error {
 	if err := c.Bind(r); err != nil {
 		return err
 	}
