@@ -9,7 +9,7 @@ type TaskUsecase interface {
 	Get(id int) (*model.Task, error)
 	List() ([]*model.Task, error)
 	Create(task *model.Task) (*model.Task, error)
-	Update(task *model.Task) (*model.Task, error)
+	Update(id int, name string, description string, isCompleted bool) (*model.Task, error)
 	Delete(id int) error
 }
 
@@ -39,10 +39,17 @@ func (uc taskUsecase) Create(task *model.Task) (*model.Task, error) {
 	return resp, nil
 }
 
-func (uc taskUsecase) Update(task *model.Task) (*model.Task, error) {
+func (uc taskUsecase) Update(id int, name string, description string, isCompleted bool) (*model.Task, error) {
+	task, err := uc.repo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	task.ChangeData(name, description, isCompleted)
+
 	if err := uc.repo.Update(task); err != nil {
 		return nil, err
 	}
+
 	resp, err := uc.repo.FindByID(task.ID)
 	if err != nil {
 		return nil, err

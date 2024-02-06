@@ -11,6 +11,13 @@ type Task struct {
 	IsCompleted bool
 }
 
+func (t *Task) ChangeData(title string, description string, isCompleted bool) {
+	t.Title = title
+	t.Description = description
+	t.IsCompleted = isCompleted
+	t.UpdatedAt = time.Now()
+}
+
 func NewTask(title string, description string) *Task {
 	currentTime := time.Now()
 	return &Task{
