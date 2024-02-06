@@ -30,19 +30,19 @@ func (uc taskUsecase) Get(ctx context.Context, id int) (*model.Task, error) {
 	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Get")
 	defer span.End()
 
-	return uc.repo.FindByID(id)
+	return uc.repo.FindByID(ctx, id)
 }
 
 func (uc taskUsecase) List(ctx context.Context) ([]*model.Task, error) {
 	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "List")
 	defer span.End()
-	return uc.repo.FindAll()
+	return uc.repo.FindAll(ctx)
 }
 
 func (uc taskUsecase) Create(ctx context.Context, task *model.Task) (*model.Task, error) {
 	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Create")
 	defer span.End()
-	resp, err := uc.repo.Create(task)
+	resp, err := uc.repo.Create(ctx, task)
 	if err != nil {
 		return nil, err
 	}
@@ -52,17 +52,17 @@ func (uc taskUsecase) Create(ctx context.Context, task *model.Task) (*model.Task
 func (uc taskUsecase) Update(ctx context.Context, id int, name string, description string, isCompleted bool) (*model.Task, error) {
 	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Update")
 	defer span.End()
-	task, err := uc.repo.FindByID(id)
+	task, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	task.ChangeData(name, description, isCompleted)
 
-	if err := uc.repo.Update(task); err != nil {
+	if err := uc.repo.Update(ctx, task); err != nil {
 		return nil, err
 	}
 
-	resp, err := uc.repo.FindByID(task.ID)
+	resp, err := uc.repo.FindByID(ctx, task.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (uc taskUsecase) Update(ctx context.Context, id int, name string, descripti
 func (uc taskUsecase) Delete(ctx context.Context, id int) error {
 	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Delete")
 	defer span.End()
-	if err := uc.repo.Delete(id); err != nil {
+	if err := uc.repo.Delete(ctx, id); err != nil {
 		return err
 	}
 	return nil

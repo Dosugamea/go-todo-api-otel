@@ -1,6 +1,9 @@
 package persistence
 
 import (
+	"context"
+
+	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/observability"
 	"github.com/Dosugamea/go-todo-api-otel/internal/model"
 	"github.com/Dosugamea/go-todo-api-otel/internal/repository"
 	"gorm.io/gorm"
@@ -16,7 +19,10 @@ func NewTaskRepository(conn *gorm.DB) repository.TaskRepository {
 	}
 }
 
-func (r taskRepositoryImpl) FindAll() ([]*model.Task, error) {
+func (r taskRepositoryImpl) FindAll(ctx context.Context) ([]*model.Task, error) {
+	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "FindAll")
+	defer span.End()
+
 	var tasks []*model.Task
 	result := r.Conn.Find(&tasks)
 	if result.Error != nil {
@@ -25,7 +31,10 @@ func (r taskRepositoryImpl) FindAll() ([]*model.Task, error) {
 	return tasks, nil
 }
 
-func (r taskRepositoryImpl) FindByID(id int) (*model.Task, error) {
+func (r taskRepositoryImpl) FindByID(ctx context.Context, id int) (*model.Task, error) {
+	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "FindByID")
+	defer span.End()
+
 	var task model.Task
 	if result := r.Conn.Model(&model.Task{}).Where("id = ?", id).Take(&task); result.Error != nil {
 		return nil, result.Error
@@ -33,21 +42,30 @@ func (r taskRepositoryImpl) FindByID(id int) (*model.Task, error) {
 	return &task, nil
 }
 
-func (r taskRepositoryImpl) Create(task *model.Task) (*model.Task, error) {
+func (r taskRepositoryImpl) Create(ctx context.Context, task *model.Task) (*model.Task, error) {
+	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Create")
+	defer span.End()
+
 	if err := r.Conn.Create(&task).Error; err != nil {
 		return nil, err
 	}
 	return task, nil
 }
 
-func (r taskRepositoryImpl) Update(task *model.Task) error {
+func (r taskRepositoryImpl) Update(ctx context.Context, task *model.Task) error {
+	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Update")
+	defer span.End()
+
 	if err := r.Conn.Model(&task).Updates(&task).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r taskRepositoryImpl) Delete(id int) error {
+func (r taskRepositoryImpl) Delete(ctx context.Context, id int) error {
+	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Delete")
+	defer span.End()
+
 	if err := r.Conn.Model(&model.Task{}).Where("id = ?", id).Delete(&model.Task{}).Error; err != nil {
 		return err
 	}
