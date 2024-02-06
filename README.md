@@ -24,6 +24,11 @@ docker-compose up --build api
 swag init
 ```
 
+### Required environment variables
+```bash
+$env:EXPORTER_ENDPOINT = "localhost:4317"
+```
+
 ## References
 - DDD
   - https://github.com/gs1068/golang-ddd-sample
@@ -38,3 +43,4 @@ swag init
   - https://zenn.dev/avita_blog/articles/d1fb4afd200aa1
   - https://uptrace.dev/get/opentelemetry-go.html
   - https://blog.cybozu.io/entry/2023/04/12/170000
+  - https://gammalab.net/blog/43uqjmpr8qx/

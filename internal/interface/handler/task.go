@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/observability"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/request"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/response"
 	"github.com/Dosugamea/go-todo-api-otel/internal/model"
@@ -45,19 +46,25 @@ func NewTaskHandler(uc usecase.TaskUsecase) TaskHandler {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [post]
 func (h taskHandler) Create(c echo.Context) error {
+	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	defer span.End()
+
 	req := &request.CreateTaskRequest{}
 	if err := req.Bind(c); err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusUnprocessableEntity, response.NewErrorResponse(err))
 	}
 
 	task := model.NewTask(req.Title, req.Description)
 	createdTask, err := h.uc.Create(task)
 	if err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
 	}
 
 	res := response.CreateTaskResponse{}
 	if err := res.Bind(createdTask); err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(err))
 	}
 	return c.JSON(http.StatusCreated, res)
@@ -76,13 +83,18 @@ func (h taskHandler) Create(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [get]
 func (h taskHandler) Get(c echo.Context) error {
+	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	defer span.End()
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
 	}
 
 	task, err := h.uc.Get(id)
 	if err != nil {
+		span.RecordError(err)
 		if v := errors.Is(err, shared_err.ErrNotFound); v {
 			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
 		}
@@ -91,6 +103,7 @@ func (h taskHandler) Get(c echo.Context) error {
 
 	res := response.GetTaskResponse{}
 	if err := res.Bind(task); err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(err))
 	}
 	return c.JSON(http.StatusOK, res)
@@ -107,13 +120,18 @@ func (h taskHandler) Get(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [get]
 func (h taskHandler) List(c echo.Context) error {
+	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	defer span.End()
+
 	tasks, err := h.uc.List()
 	if err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
 	}
 
 	res := response.ListTaskResponse{}
 	if err := res.Bind(tasks); err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(err))
 	}
 	return c.JSON(http.StatusOK, res)
@@ -136,18 +154,24 @@ func (h taskHandler) List(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [put]
 func (h taskHandler) Update(c echo.Context) error {
+	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	defer span.End()
+
 	req := &request.UpdateTaskRequest{}
 	if err := req.Bind(c); err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusUnprocessableEntity, response.NewErrorResponse(err))
 	}
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
 	}
 
 	updatedTask, err := h.uc.Update(id, req.Title, req.Description, req.IsCompleted)
 	if err != nil {
+		span.RecordError(err)
 		if v := errors.Is(err, shared_err.ErrNotFound); v {
 			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
 		}
@@ -156,6 +180,7 @@ func (h taskHandler) Update(c echo.Context) error {
 
 	res := response.UpdateTaskResponse{}
 	if err := res.Bind(updatedTask); err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
 	}
 
@@ -176,12 +201,17 @@ func (h taskHandler) Update(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [delete]
 func (h taskHandler) Delete(c echo.Context) error {
+	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	defer span.End()
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		span.RecordError(err)
 		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
 	}
 
 	if err := h.uc.Delete(id); err != nil {
+		span.RecordError(err)
 		if v := errors.Is(err, shared_err.ErrNotFound); v {
 			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
 		}
