@@ -11,13 +11,24 @@ PoC of OpenTelemetry for go echo api
 
 ![Endpoint list](./endpoints.png)
 
+## Tracing examples
+
+![Tracing example](./tracing.png)
+
 ## Commands
 
-### Run
+### Run this example
 ```bash
 docker-compose up --build api
-(Go to http://localhost:8080/swagger/index.html and try the API)
 ```
+
+- Open your browser
+- Insert some tasks
+  - http://localhost:8080/swagger/index.html#/task/create-task
+- Update the created task
+  - http://localhost:8080/swagger/index.html#/task/update-task
+- See the open telemetry dashboard and the logging is working correctly
+  - http://localhost:16686/search
 
 ### Regenerate docs
 ```bash
