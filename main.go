@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/Dosugamea/go-todo-api-otel/docs"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/database"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/persistence"
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/router"

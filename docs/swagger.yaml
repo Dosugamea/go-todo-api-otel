@@ -1,0 +1,235 @@
+basePath: /api/v1
+definitions:
+  response.AddTaskRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  response.AddTaskResponse:
+    properties:
+      task:
+        $ref: '#/definitions/response.TaskResponse'
+    type: object
+  response.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  response.GetTaskResponse:
+    properties:
+      task:
+        $ref: '#/definitions/response.TaskResponse'
+    type: object
+  response.ListTaskResponse:
+    properties:
+      tasks:
+        items:
+          $ref: '#/definitions/response.TaskResponse'
+        type: array
+    type: object
+  response.TaskResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      is_completed:
+        type: boolean
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  response.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      is_completed:
+        type: boolean
+      title:
+        type: string
+    type: object
+  response.UpdateTaskResponse:
+    properties:
+      task:
+        $ref: '#/definitions/response.TaskResponse'
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact: {}
+  description: This is a simple todo tasks API
+  title: Todo tasks API
+  version: "1.0"
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Get all tasks.
+      operationId: get-tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ListTaskResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get all tasks
+      tags:
+      - task
+    post:
+      consumes:
+      - application/json
+      description: Create a task.
+      operationId: create-task
+      parameters:
+      - description: Task to create
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/response.AddTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.AddTaskResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a task
+      tags:
+      - task
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a task
+      operationId: delete-task
+      parameters:
+      - description: ID of the task to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete a task
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: Get a task.
+      operationId: get-task
+      parameters:
+      - description: ID of the task to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a task
+      tags:
+      - task
+    put:
+      consumes:
+      - application/json
+      description: Update a task
+      operationId: update-task
+      parameters:
+      - description: ID of the task to update
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Task to update
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/response.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UpdateTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a task
+      tags:
+      - task
+produces:
+- application/json
+schemes:
+- http
+- https
+swagger: "2.0"
