@@ -31,7 +31,7 @@ func (h taskHandler) Add() echo.HandlerFunc {
 
 func (h taskHandler) Get() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return nil
+		return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
 	}
 }
 
