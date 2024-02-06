@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"time"
 
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/observability"
 	"github.com/Dosugamea/go-todo-api-otel/internal/model"
@@ -35,6 +36,9 @@ func (r taskRepositoryImpl) FindByID(ctx context.Context, id int) (*model.Task, 
 	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "FindByID")
 	defer span.End()
 
+	// 1~3秒のランダムな待ち時間を追加
+	time.Sleep(time.Duration(1+time.Now().Nanosecond()%3) * time.Second)
+
 	var task model.Task
 	if result := r.Conn.WithContext(ctx).Model(&model.Task{}).Where("id = ?", id).Take(&task); result.Error != nil {
 		return nil, result.Error
@@ -55,6 +59,8 @@ func (r taskRepositoryImpl) Create(ctx context.Context, task *model.Task) (*mode
 func (r taskRepositoryImpl) Update(ctx context.Context, task *model.Task) error {
 	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Update")
 	defer span.End()
+
+	time.Sleep(3 * time.Second)
 
 	if err := r.Conn.WithContext(ctx).Model(&task).Updates(&task).Error; err != nil {
 		return err

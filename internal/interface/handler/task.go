@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/observability"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/request"
@@ -156,6 +157,9 @@ func (h taskHandler) List(c echo.Context) error {
 func (h taskHandler) Update(c echo.Context) error {
 	ctx, span := observability.Tracer.StartInterfaceSpan(c, "Update")
 	defer span.End()
+
+	// 0~2秒のランダムな待ち時間を追加
+	time.Sleep(time.Duration(0+time.Now().Nanosecond()%2) * time.Second)
 
 	req := &request.UpdateTaskRequest{}
 	if err := req.Bind(c); err != nil {

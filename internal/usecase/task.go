@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/observability"
 	"github.com/Dosugamea/go-todo-api-otel/internal/model"
@@ -52,6 +53,10 @@ func (uc taskUsecase) Create(ctx context.Context, task *model.Task) (*model.Task
 func (uc taskUsecase) Update(ctx context.Context, id int, name string, description string, isCompleted bool) (*model.Task, error) {
 	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Update")
 	defer span.End()
+
+	// 0~2秒のランダムな待ち時間を追加
+	time.Sleep(time.Duration(time.Now().Nanosecond()%2) * time.Second)
+
 	task, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
