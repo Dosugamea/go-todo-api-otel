@@ -44,3 +44,4 @@ $env:EXPORTER_ENDPOINT = "localhost:4317"
   - https://uptrace.dev/get/opentelemetry-go.html
   - https://blog.cybozu.io/entry/2023/04/12/170000
   - https://gammalab.net/blog/43uqjmpr8qx/
+  - https://uptrace.dev/get/instrument/opentelemetry-gorm.html

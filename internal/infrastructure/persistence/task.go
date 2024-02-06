@@ -24,7 +24,7 @@ func (r taskRepositoryImpl) FindAll(ctx context.Context) ([]*model.Task, error) 
 	defer span.End()
 
 	var tasks []*model.Task
-	result := r.Conn.Find(&tasks)
+	result := r.Conn.WithContext(ctx).Find(&tasks)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -36,7 +36,7 @@ func (r taskRepositoryImpl) FindByID(ctx context.Context, id int) (*model.Task, 
 	defer span.End()
 
 	var task model.Task
-	if result := r.Conn.Model(&model.Task{}).Where("id = ?", id).Take(&task); result.Error != nil {
+	if result := r.Conn.WithContext(ctx).Model(&model.Task{}).Where("id = ?", id).Take(&task); result.Error != nil {
 		return nil, result.Error
 	}
 	return &task, nil
@@ -46,7 +46,7 @@ func (r taskRepositoryImpl) Create(ctx context.Context, task *model.Task) (*mode
 	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Create")
 	defer span.End()
 
-	if err := r.Conn.Create(&task).Error; err != nil {
+	if err := r.Conn.WithContext(ctx).Create(&task).Error; err != nil {
 		return nil, err
 	}
 	return task, nil
@@ -56,7 +56,7 @@ func (r taskRepositoryImpl) Update(ctx context.Context, task *model.Task) error 
 	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Update")
 	defer span.End()
 
-	if err := r.Conn.Model(&task).Updates(&task).Error; err != nil {
+	if err := r.Conn.WithContext(ctx).Model(&task).Updates(&task).Error; err != nil {
 		return err
 	}
 	return nil
@@ -66,7 +66,7 @@ func (r taskRepositoryImpl) Delete(ctx context.Context, id int) error {
 	ctx, span := observability.Tracer.StartPersistenceSpan(ctx, "Delete")
 	defer span.End()
 
-	if err := r.Conn.Model(&model.Task{}).Where("id = ?", id).Delete(&model.Task{}).Error; err != nil {
+	if err := r.Conn.WithContext(ctx).Model(&model.Task{}).Where("id = ?", id).Delete(&model.Task{}).Error; err != nil {
 		return err
 	}
 	return nil
