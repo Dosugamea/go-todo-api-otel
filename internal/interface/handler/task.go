@@ -1,18 +1,20 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/response"
 	"github.com/Dosugamea/go-todo-api-otel/internal/usecase"
 	"github.com/labstack/echo/v4"
 )
 
 type TaskHandler interface {
-	Add() echo.HandlerFunc
-	Get() echo.HandlerFunc
-	List() echo.HandlerFunc
-	Update() echo.HandlerFunc
-	Delete() echo.HandlerFunc
+	Add(c echo.Context) error
+	Get(c echo.Context) error
+	List(c echo.Context) error
+	Update(c echo.Context) error
+	Delete(c echo.Context) error
 }
 
 type taskHandler struct {
@@ -38,10 +40,8 @@ func NewTaskHandler(uc usecase.TaskUsecase) TaskHandler {
 // @Failure 422 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [post]
-func (h taskHandler) Add() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return nil
-	}
+func (h taskHandler) Add(c echo.Context) error {
+	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
 }
 
 // GetTask godoc
@@ -56,10 +56,8 @@ func (h taskHandler) Add() echo.HandlerFunc {
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [get]
-func (h taskHandler) Get() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
-	}
+func (h taskHandler) Get(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
 }
 
 // ListTasks godoc
@@ -72,10 +70,8 @@ func (h taskHandler) Get() echo.HandlerFunc {
 // @Success 200 {object} response.ListTaskResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [get]
-func (h taskHandler) List() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return nil
-	}
+func (h taskHandler) List(c echo.Context) error {
+	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
 }
 
 // UpdateTask godoc
@@ -94,10 +90,8 @@ func (h taskHandler) List() echo.HandlerFunc {
 // @Failure 404 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [put]
-func (h taskHandler) Update() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return nil
-	}
+func (h taskHandler) Update(c echo.Context) error {
+	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
 }
 
 // DeleteTask godoc
@@ -113,8 +107,6 @@ func (h taskHandler) Update() echo.HandlerFunc {
 // @Failure 404 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [delete]
-func (h taskHandler) Delete() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return nil
-	}
+func (h taskHandler) Delete(c echo.Context) error {
+	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
 }
