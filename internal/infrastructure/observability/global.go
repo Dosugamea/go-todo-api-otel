@@ -23,13 +23,13 @@ func (t *TracerWrapper) StartInterfaceSpan(c echo.Context, methodName string) (c
 	return ctx, span
 }
 
-func (t *TracerWrapper) StartUsecaseSpan(c echo.Context, methodName string) (context.Context, trace.Span) {
-	ctx, span := t.tracer.Start(c.Request().Context(), methodName+" (U)", LAYER_ATTR_USECASE)
+func (t *TracerWrapper) StartUsecaseSpan(ctx context.Context, methodName string) (context.Context, trace.Span) {
+	ctx, span := t.tracer.Start(ctx, methodName+" (U)", LAYER_ATTR_USECASE)
 	return ctx, span
 }
 
-func (t *TracerWrapper) StartPersistenceSpan(c echo.Context, methodName string) (context.Context, trace.Span) {
-	ctx, span := t.tracer.Start(c.Request().Context(), methodName+" (P)", LAYER_ATTR_PERSISTENCE)
+func (t *TracerWrapper) StartPersistenceSpan(ctx context.Context, methodName string) (context.Context, trace.Span) {
+	ctx, span := t.tracer.Start(ctx, methodName+" (P)", LAYER_ATTR_PERSISTENCE)
 	return ctx, span
 }
 
