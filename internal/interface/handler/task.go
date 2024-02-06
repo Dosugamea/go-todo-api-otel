@@ -46,7 +46,7 @@ func NewTaskHandler(uc usecase.TaskUsecase) TaskHandler {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [post]
 func (h taskHandler) Create(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	_, span := observability.Tracer.StartInterfaceSpan(c, "Create")
 	defer span.End()
 
 	req := &request.CreateTaskRequest{}
@@ -83,7 +83,7 @@ func (h taskHandler) Create(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [get]
 func (h taskHandler) Get(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	_, span := observability.Tracer.StartInterfaceSpan(c, "Get")
 	defer span.End()
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -120,7 +120,7 @@ func (h taskHandler) Get(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [get]
 func (h taskHandler) List(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	_, span := observability.Tracer.StartInterfaceSpan(c, "List")
 	defer span.End()
 
 	tasks, err := h.uc.List()
@@ -154,7 +154,7 @@ func (h taskHandler) List(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [put]
 func (h taskHandler) Update(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	_, span := observability.Tracer.StartInterfaceSpan(c, "Update")
 	defer span.End()
 
 	req := &request.UpdateTaskRequest{}
@@ -201,7 +201,7 @@ func (h taskHandler) Update(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [delete]
 func (h taskHandler) Delete(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "HandlerGet")
+	_, span := observability.Tracer.StartInterfaceSpan(c, "Delete")
 	defer span.End()
 
 	id, err := strconv.Atoi(c.Param("id"))
