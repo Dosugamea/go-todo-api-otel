@@ -1,16 +1,19 @@
 package usecase
 
 import (
+	"context"
+
+	"github.com/Dosugamea/go-todo-api-otel/internal/infrastructure/observability"
 	"github.com/Dosugamea/go-todo-api-otel/internal/model"
 	"github.com/Dosugamea/go-todo-api-otel/internal/repository"
 )
 
 type TaskUsecase interface {
-	Get(id int) (*model.Task, error)
-	List() ([]*model.Task, error)
-	Create(task *model.Task) (*model.Task, error)
-	Update(id int, name string, description string, isCompleted bool) (*model.Task, error)
-	Delete(id int) error
+	Get(ctx context.Context, id int) (*model.Task, error)
+	List(ctx context.Context) ([]*model.Task, error)
+	Create(ctx context.Context, task *model.Task) (*model.Task, error)
+	Update(ctx context.Context, id int, name string, description string, isCompleted bool) (*model.Task, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type taskUsecase struct {
@@ -23,15 +26,22 @@ func NewTaskUsecase(repo repository.TaskRepository) TaskUsecase {
 	}
 }
 
-func (uc taskUsecase) Get(id int) (*model.Task, error) {
+func (uc taskUsecase) Get(ctx context.Context, id int) (*model.Task, error) {
+	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Get")
+	defer span.End()
+
 	return uc.repo.FindByID(id)
 }
 
-func (uc taskUsecase) List() ([]*model.Task, error) {
+func (uc taskUsecase) List(ctx context.Context) ([]*model.Task, error) {
+	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "List")
+	defer span.End()
 	return uc.repo.FindAll()
 }
 
-func (uc taskUsecase) Create(task *model.Task) (*model.Task, error) {
+func (uc taskUsecase) Create(ctx context.Context, task *model.Task) (*model.Task, error) {
+	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Create")
+	defer span.End()
 	resp, err := uc.repo.Create(task)
 	if err != nil {
 		return nil, err
@@ -39,7 +49,9 @@ func (uc taskUsecase) Create(task *model.Task) (*model.Task, error) {
 	return resp, nil
 }
 
-func (uc taskUsecase) Update(id int, name string, description string, isCompleted bool) (*model.Task, error) {
+func (uc taskUsecase) Update(ctx context.Context, id int, name string, description string, isCompleted bool) (*model.Task, error) {
+	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Update")
+	defer span.End()
 	task, err := uc.repo.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -57,7 +69,9 @@ func (uc taskUsecase) Update(id int, name string, description string, isComplete
 	return resp, nil
 }
 
-func (uc taskUsecase) Delete(id int) error {
+func (uc taskUsecase) Delete(ctx context.Context, id int) error {
+	ctx, span := observability.Tracer.StartUsecaseSpan(ctx, "Delete")
+	defer span.End()
 	if err := uc.repo.Delete(id); err != nil {
 		return err
 	}

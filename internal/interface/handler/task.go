@@ -46,7 +46,7 @@ func NewTaskHandler(uc usecase.TaskUsecase) TaskHandler {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [post]
 func (h taskHandler) Create(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "Create")
+	ctx, span := observability.Tracer.StartInterfaceSpan(c, "Create")
 	defer span.End()
 
 	req := &request.CreateTaskRequest{}
@@ -56,7 +56,7 @@ func (h taskHandler) Create(c echo.Context) error {
 	}
 
 	task := model.NewTask(req.Title, req.Description)
-	createdTask, err := h.uc.Create(task)
+	createdTask, err := h.uc.Create(ctx, task)
 	if err != nil {
 		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
@@ -83,7 +83,7 @@ func (h taskHandler) Create(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [get]
 func (h taskHandler) Get(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "Get")
+	ctx, span := observability.Tracer.StartInterfaceSpan(c, "Get")
 	defer span.End()
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -92,7 +92,7 @@ func (h taskHandler) Get(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
 	}
 
-	task, err := h.uc.Get(id)
+	task, err := h.uc.Get(ctx, id)
 	if err != nil {
 		span.RecordError(err)
 		if v := errors.Is(err, shared_err.ErrNotFound); v {
@@ -120,10 +120,10 @@ func (h taskHandler) Get(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [get]
 func (h taskHandler) List(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "List")
+	ctx, span := observability.Tracer.StartInterfaceSpan(c, "List")
 	defer span.End()
 
-	tasks, err := h.uc.List()
+	tasks, err := h.uc.List(ctx)
 	if err != nil {
 		span.RecordError(err)
 		return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(shared_err.ErrInternalServerError))
@@ -154,7 +154,7 @@ func (h taskHandler) List(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [put]
 func (h taskHandler) Update(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "Update")
+	ctx, span := observability.Tracer.StartInterfaceSpan(c, "Update")
 	defer span.End()
 
 	req := &request.UpdateTaskRequest{}
@@ -169,7 +169,7 @@ func (h taskHandler) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
 	}
 
-	updatedTask, err := h.uc.Update(id, req.Title, req.Description, req.IsCompleted)
+	updatedTask, err := h.uc.Update(ctx, id, req.Title, req.Description, req.IsCompleted)
 	if err != nil {
 		span.RecordError(err)
 		if v := errors.Is(err, shared_err.ErrNotFound); v {
@@ -201,7 +201,7 @@ func (h taskHandler) Update(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [delete]
 func (h taskHandler) Delete(c echo.Context) error {
-	_, span := observability.Tracer.StartInterfaceSpan(c, "Delete")
+	ctx, span := observability.Tracer.StartInterfaceSpan(c, "Delete")
 	defer span.End()
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -210,7 +210,7 @@ func (h taskHandler) Delete(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.NewErrorResponse(shared_err.ErrInvalidId))
 	}
 
-	if err := h.uc.Delete(id); err != nil {
+	if err := h.uc.Delete(ctx, id); err != nil {
 		span.RecordError(err)
 		if v := errors.Is(err, shared_err.ErrNotFound); v {
 			return c.JSON(http.StatusNotFound, response.NewErrorResponse(shared_err.ErrNotFound))
