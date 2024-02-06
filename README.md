@@ -7,12 +7,19 @@
 
 PoC of OpenTelemetry for go echo api
 
-## Run
+## Endpoints
+
+![Endpoint list](./endpoints.png)
+
+## Commands
+
+### Run
 ```bash
 go run main.go
+(Go to http://localhost:8080/swagger/index.html and try the API)
 ```
 
-## Regenerate docs
+### Regenerate docs
 ```bash
 swag init
 ```
