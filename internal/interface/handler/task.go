@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/request"
 	"github.com/Dosugamea/go-todo-api-otel/internal/interface/handler/response"
 	"github.com/Dosugamea/go-todo-api-otel/internal/usecase"
 	"github.com/labstack/echo/v4"
@@ -41,7 +42,12 @@ func NewTaskHandler(uc usecase.TaskUsecase) TaskHandler {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks [post]
 func (h taskHandler) Create(c echo.Context) error {
-	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
+	req := &request.CreateTaskRequest{}
+	if err := req.Bind(c); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, response.NewErrorResponse(err))
+	}
+
+	return c.JSON(http.StatusCreated, response.NewErrorResponse(errors.New("not implemented")))
 }
 
 // GetTask godoc
@@ -91,6 +97,11 @@ func (h taskHandler) List(c echo.Context) error {
 // @Failure 500 {object} response.ErrorResponse
 // @Router /tasks/{id} [put]
 func (h taskHandler) Update(c echo.Context) error {
+	req := &request.UpdateTaskRequest{}
+	if err := req.Bind(c); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, response.NewErrorResponse(err))
+	}
+
 	return c.JSON(http.StatusInternalServerError, response.NewErrorResponse(errors.New("not implemented")))
 }
 
