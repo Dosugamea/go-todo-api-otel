@@ -21,7 +21,7 @@ PoC of OpenTelemetry for go echo api
 ```bash
 git clone https://github.com/Dosugamea/go-todo-api-otel
 cd go-todo-api-otel
-docker-compose up --build api
+docker-compose up -d
 ```
 
 - Open your browser
